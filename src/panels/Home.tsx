@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from "react";
 import {
   Panel,
   PanelHeader,
@@ -9,35 +9,47 @@ import {
   Div,
   Avatar,
   NavIdProps,
-} from '@vkontakte/vkui';
-import { UserInfo } from '@vkontakte/vk-bridge';
-import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
+  RichCell,
+  UsersStack,
+  ButtonGroup,
+  Link,
+} from "@vkontakte/vkui";
+import { UserInfo } from "@vkontakte/vk-bridge";
+import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
+import { useGetTopNewsQuery } from "../services/api";
 
 export interface HomeProps extends NavIdProps {
   fetchedUser?: UserInfo;
 }
 
-export const Home: FC<HomeProps> = ({ id, fetchedUser }) => {
-  const { photo_200, city, first_name, last_name } = { ...fetchedUser };
+export const Home: FC<HomeProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
+
+  const { data: newsArr, error, isLoading } = useGetTopNewsQuery();
+
+  useEffect(() => {
+    console.log("data", newsArr);
+  }, [newsArr]);
 
   return (
     <Panel id={id}>
       <PanelHeader>Главная</PanelHeader>
-      {fetchedUser && (
-        <Group header={<Header mode="secondary">User Data Fetched with VK Bridge</Header>}>
-          <Cell before={photo_200 && <Avatar src={photo_200} />} subtitle={city?.title}>
-            {`${first_name} ${last_name}`}
-          </Cell>
-        </Group>
-      )}
-
-      <Group header={<Header mode="secondary">Navigation Example</Header>}>
-        <Div>
-          <Button stretched size="l" mode="secondary" onClick={() => routeNavigator.push('persik')}>
-            Покажите Персика, пожалуйста!
-          </Button>
-        </Div>
+      <Group header={<Header>Рекомендации друзей</Header>}>
+        {newsArr &&
+          newsArr.map((item) => {
+            return (
+              <RichCell
+                key={item.id}
+                caption={`Дата: ${item.time}`}
+                text={item.by}
+                afterCaption={`Рейтинг: ${item.score}`}
+              >
+                <Link onClick={() => routeNavigator.push("persik")}>
+                  {item.title}
+                </Link>
+              </RichCell>
+            );
+          })}
       </Group>
     </Panel>
   );
