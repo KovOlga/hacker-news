@@ -34,7 +34,7 @@ export const Home: FC<HomeProps> = ({ id }) => {
   return (
     <Panel id={id}>
       <PanelHeader>Главная</PanelHeader>
-      <Group header={<Header>Рекомендации друзей</Header>}>
+      <Group header={<Header>Последние новости</Header>}>
         {newsArr &&
           newsArr.map((item) => {
             return (
@@ -44,7 +44,7 @@ export const Home: FC<HomeProps> = ({ id }) => {
                 text={item.by}
                 afterCaption={`Рейтинг: ${item.score}`}
               >
-                <Link onClick={() => routeNavigator.push("persik")}>
+                <Link onClick={() => routeNavigator.push(`news/${item.id}`)}>
                   {item.title}
                 </Link>
               </RichCell>

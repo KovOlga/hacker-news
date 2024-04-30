@@ -1,4 +1,4 @@
-export { Persik } from './Persik';
-export { Home } from './Home';
+export { NewsItem } from "./NewsItem";
+export { Home } from "./Home";
 
-export type { HomeProps } from './Home';
+export type { HomeProps } from "./Home";

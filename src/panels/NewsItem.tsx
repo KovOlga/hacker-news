@@ -9,7 +9,7 @@ import {
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import PersikImage from "../assets/persik.png";
 
-export const Persik: FC<NavIdProps> = ({ id }) => {
+export const NewsItem: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
 
   return (
