@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IComment, INewsItem } from "../types/data";
+import { IComment, INewsItem, INewsItemWithComments } from "../types/data";
 
 export const newsApi = createApi({
   reducerPath: "pokemonApi",
@@ -20,13 +20,36 @@ export const newsApi = createApi({
         return res;
       },
     }),
-    getNewsById: builder.query<INewsItem, number>({
+    getNewsItemById: builder.query<INewsItemWithComments, number>({
       query: (id) => `item/${id}.json`,
+      transformResponse: async (response: INewsItem) => {
+        const parentCommentsRequests = response.kids.map((id) =>
+          fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
+            (res) => res.json()
+          )
+        );
+        const res = await Promise.all(parentCommentsRequests);
+        return { newsItem: response, comments: res };
+      },
     }),
-    getCommentsById: builder.query<IComment, number>({
+    getComments: builder.query<IComment, number>({
       query: (id) => `item/${id}.json`,
+      // transformResponse: async (response: INewsItem[]) => {
+      //   const idArr = response.slice(0, 5);
+      //   const requests = idArr.map((id) =>
+      //     fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
+      //       (res) => res.json()
+      //     )
+      //   );
+      //   const res = await Promise.all(requests);
+      //   return res;
+      // },
     }),
   }),
 });
 
-export const { useGetTopNewsQuery, useGetNewsByIdQuery } = newsApi;
+export const {
+  useGetTopNewsQuery,
+  useGetNewsItemByIdQuery,
+  useGetCommentsQuery,
+} = newsApi;

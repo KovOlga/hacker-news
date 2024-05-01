@@ -2,11 +2,17 @@ export interface INewsItem {
   by: string;
   descendants: number;
   id: number;
+  kids: number[];
   score: number;
   time: any;
   title: string;
   type: string;
   url: string;
+}
+
+export interface INewsItemWithComments {
+  newsItem: INewsItem;
+  comments: IComment[];
 }
 
 export interface IComment {
