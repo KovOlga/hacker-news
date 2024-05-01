@@ -32,18 +32,17 @@ export const newsApi = createApi({
         return { newsItem: response, comments: res };
       },
     }),
-    getComments: builder.query<IComment, number>({
+    getCommentKids: builder.query<IComment[], number>({
       query: (id) => `item/${id}.json`,
-      // transformResponse: async (response: INewsItem[]) => {
-      //   const idArr = response.slice(0, 5);
-      //   const requests = idArr.map((id) =>
-      //     fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
-      //       (res) => res.json()
-      //     )
-      //   );
-      //   const res = await Promise.all(requests);
-      //   return res;
-      // },
+      transformResponse: async (response: IComment) => {
+        const requests = response.kids.map((id) =>
+          fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
+            (res) => res.json()
+          )
+        );
+        const res = await Promise.all(requests);
+        return res;
+      },
     }),
   }),
 });
@@ -51,5 +50,5 @@ export const newsApi = createApi({
 export const {
   useGetTopNewsQuery,
   useGetNewsItemByIdQuery,
-  useGetCommentsQuery,
+  useGetCommentKidsQuery,
 } = newsApi;
