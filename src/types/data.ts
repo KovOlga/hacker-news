@@ -1,4 +1,4 @@
-export interface INews {
+export interface INewsItem {
   by: string;
   descendants: number;
   id: number;
@@ -7,4 +7,14 @@ export interface INews {
   title: string;
   type: string;
   url: string;
+}
+
+export interface IComment {
+  by: string;
+  id: number;
+  kids: number[];
+  parent: number;
+  text: string;
+  time: any;
+  type: string;
 }

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { INews } from "../types/data";
+import { IComment, INewsItem } from "../types/data";
 
 export const newsApi = createApi({
   reducerPath: "pokemonApi",
@@ -7,9 +7,9 @@ export const newsApi = createApi({
     baseUrl: "https://hacker-news.firebaseio.com/v0/",
   }),
   endpoints: (builder) => ({
-    getTopNews: builder.query<INews[], void>({
+    getTopNews: builder.query<INewsItem[], void>({
       query: () => "newstories.json",
-      transformResponse: async (response: INews[]) => {
+      transformResponse: async (response: INewsItem[]) => {
         const idArr = response.slice(0, 5);
         const requests = idArr.map((id) =>
           fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
@@ -20,10 +20,13 @@ export const newsApi = createApi({
         return res;
       },
     }),
-    // getNewsById: builder.query<any, number>({
-    //   query: (id) => `item/${id}.json`,
-    // }),
+    getNewsById: builder.query<INewsItem, number>({
+      query: (id) => `item/${id}.json`,
+    }),
+    getCommentsById: builder.query<IComment, number>({
+      query: (id) => `item/${id}.json`,
+    }),
   }),
 });
 
-export const { useGetTopNewsQuery } = newsApi;
+export const { useGetTopNewsQuery, useGetNewsByIdQuery } = newsApi;

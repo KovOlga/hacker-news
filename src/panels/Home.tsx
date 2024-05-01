@@ -27,10 +27,6 @@ export const Home: FC<HomeProps> = ({ id }) => {
 
   const { data: newsArr, error, isLoading } = useGetTopNewsQuery();
 
-  useEffect(() => {
-    console.log("data", newsArr);
-  }, [newsArr]);
-
   return (
     <Panel id={id}>
       <PanelHeader>Главная</PanelHeader>
