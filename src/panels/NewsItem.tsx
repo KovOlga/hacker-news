@@ -14,7 +14,7 @@ import {
 import { useParams, useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { newsApi, useGetNewsItemByIdQuery } from "../services/api";
 import { Icon24ExternalLinkOutline } from "@vkontakte/icons";
-import Comment from "../components/comment";
+import CommentAccordion from "../components/comment";
 
 export const NewsItem: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
@@ -48,7 +48,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
           </RichCell>
           <Div>{`Кол-во комментариев: ${data.newsItem.descendants}`}</Div>
           {data.comments.map((comment) => {
-            return <Comment key={comment.id} comment={comment} />;
+            return <CommentAccordion key={comment.id} comment={comment} />;
           })}
         </>
       )}

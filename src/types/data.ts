@@ -19,7 +19,7 @@ export interface IComment {
   by: string;
   id: number;
   kids?: number[];
-  loadedKids?: IComment[];
+  loadedKids: IComment[];
   parent: number;
   text: string;
   time: any;

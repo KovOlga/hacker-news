@@ -7,7 +7,7 @@ interface ICommentProps {
   comment: IComment;
 }
 
-const Comment: FC<ICommentProps> = ({ comment }) => {
+const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
   const [trigger, result, lastPromiseInfo] =
     newsApi.useLazyGetCommentKidsQuery();
 
@@ -36,11 +36,11 @@ const Comment: FC<ICommentProps> = ({ comment }) => {
         {comment.kids &&
           result &&
           result.data &&
-          result.data.map((comment) => {
+          result.data.loadedKids &&
+          result.data.loadedKids.map((comment) => {
             return (
               <Accordion.Content key={comment.id}>
-                {/* <Comment comment={comment} /> */}
-                <Div>{comment.text}</Div>
+                <SimpleComment comment={comment} />
               </Accordion.Content>
             );
           })}
@@ -49,4 +49,22 @@ const Comment: FC<ICommentProps> = ({ comment }) => {
   );
 };
 
-export default Comment;
+const SimpleComment: FC<{ comment: IComment }> = ({ comment }) => {
+  console.log("comment", comment);
+  return (
+    <>
+      <RichCell caption={`Дата: ${comment.time}`} text={comment.text}>
+        {comment.by}
+      </RichCell>
+      {comment.loadedKids && (
+        <Div>
+          {comment.loadedKids.map((comment) => {
+            return <SimpleComment comment={comment} key={comment.id} />;
+          })}
+        </Div>
+      )}
+    </>
+  );
+};
+
+export default CommentAccordion;
