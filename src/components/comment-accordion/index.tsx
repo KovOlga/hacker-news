@@ -21,8 +21,9 @@ const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
   return (
     <Group key={comment.id}>
       <Accordion onChange={(e) => e && handleAccordionClick(comment.id)}>
-        <Accordion.Summary iconPosition="before">
+        <Accordion.Summary iconPosition="before" multiline>
           <RichCell
+            multiline
             caption={`Дата: ${convertTimeStampToDate(comment.time)}`}
             text={comment.text}
           >

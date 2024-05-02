@@ -7,6 +7,7 @@ const SimpleComment: FC<{ comment: IComment }> = ({ comment }) => {
   return (
     <>
       <RichCell
+        multiline
         caption={`Дата: ${convertTimeStampToDate(comment.time)}`}
         text={comment.text}
       >
