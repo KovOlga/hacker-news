@@ -55,7 +55,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
               </Link>
             }
           >
-            <Title level="2" style={{ marginBottom: 16 }}>
+            <Title level="1" style={{ marginBottom: 16 }}>
               {newsItem.title}
             </Title>
           </RichCell>
