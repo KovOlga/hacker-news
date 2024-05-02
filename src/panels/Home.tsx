@@ -11,11 +11,17 @@ import {
   Spinner,
   Title,
   SimpleCell,
+  Avatar,
+  Div,
+  Card,
+  Spacing,
+  Text,
 } from "@vkontakte/vkui";
 import { UserInfo } from "@vkontakte/vk-bridge";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { newsApi } from "../services/api";
 import { convertTimeStampToDate } from "../utils/utils";
+import { Icon28User } from "@vkontakte/icons";
 
 export interface HomeProps extends NavIdProps {
   fetchedUser?: UserInfo;
@@ -63,24 +69,35 @@ export const Home: FC<HomeProps> = ({ id }) => {
         }
       >
         {newsArr.isFetching && <Spinner />}
+
         {!newsArr.isFetching &&
           newsArr.data &&
           newsArr.data.map((item) => {
             return (
-              <RichCell
-                key={item.id}
-                caption={`Дата: ${
-                  item.time && convertTimeStampToDate(item.time)
-                }`}
-                text={item.by}
-                afterCaption={`Рейтинг: ${item.score}`}
-              >
-                <Link onClick={() => routeNavigator.push(`news/${item.id}`)}>
-                  {item.title}
-                </Link>
-              </RichCell>
+              <Div key={item.id}>
+                <Card mode="outline">
+                  <RichCell
+                    before={<Avatar fallbackIcon={<Icon28User />} />}
+                    caption={`Дата: ${
+                      item && item.time && convertTimeStampToDate(item.time)
+                    }`}
+                    text={<Title level="3">item.by</Title>}
+                    afterCaption={
+                      <Text weight="2">{`Рейтинг: ${item.score}`}</Text>
+                    }
+                  >
+                    <Link
+                      onClick={() => routeNavigator.push(`news/${item.id}`)}
+                    >
+                      <Title level="2">{item.title}</Title>
+                    </Link>
+                  </RichCell>
+                </Card>
+                <Spacing size={16} />
+              </Div>
             );
           })}
+
         {newsArr.isError && (
           <Title level="1" style={{ marginBottom: 16 }}>
             Произошла ошибка

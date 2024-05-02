@@ -1,9 +1,10 @@
-import { Accordion, Group, RichCell } from "@vkontakte/vkui";
+import { Accordion, Avatar, Group, RichCell } from "@vkontakte/vkui";
 import { FC } from "react";
 import { IComment } from "../../types/data";
 import { newsApi } from "../../services/api";
 import SimpleComment from "../simple-comment";
 import { convertTimeStampToDate } from "../../utils/utils";
+import { Icon28User } from "@vkontakte/icons";
 
 interface ICommentProps {
   comment: IComment;
@@ -23,6 +24,7 @@ const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
       <Accordion onChange={(e) => e && handleAccordionClick(comment.id)}>
         <Accordion.Summary iconPosition="before" multiline>
           <RichCell
+            before={<Avatar fallbackIcon={<Icon28User />} />}
             multiline
             caption={`Дата: ${convertTimeStampToDate(comment.time)}`}
             text={comment.text}

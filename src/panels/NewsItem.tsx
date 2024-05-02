@@ -1,5 +1,6 @@
 import { FC, useEffect } from "react";
 import {
+  Avatar,
   Button,
   Group,
   Link,
@@ -14,7 +15,7 @@ import {
 } from "@vkontakte/vkui";
 import { useParams, useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { newsApi, useGetNewsItemByIdQuery } from "../services/api";
-import { Icon24ExternalLinkOutline } from "@vkontakte/icons";
+import { Icon24ExternalLinkOutline, Icon28User } from "@vkontakte/icons";
 import CommentAccordion from "../components/comment-accordion";
 import SimpleComment from "../components/simple-comment";
 import { convertTimeStampToDate } from "../utils/utils";
@@ -46,6 +47,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
       {newsItem && (
         <>
           <RichCell
+            before={<Avatar fallbackIcon={<Icon28User />} />}
             text={`Автор: ${newsItem.by}`}
             caption={`Дата: ${convertTimeStampToDate(newsItem.time)}`}
             after={
