@@ -4,7 +4,7 @@ export interface INewsItem {
   id: number;
   kids: number[];
   score: number;
-  time: any;
+  time: number;
   title: string;
   type: string;
   url: string;
@@ -17,6 +17,6 @@ export interface IComment {
   loadedKids: IComment[];
   parent: number;
   text: string;
-  time: any;
+  time: number;
   type: string;
 }

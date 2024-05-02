@@ -13,10 +13,13 @@ import {
   UsersStack,
   ButtonGroup,
   Link,
+  Spinner,
+  Title,
 } from "@vkontakte/vkui";
 import { UserInfo } from "@vkontakte/vk-bridge";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { useGetTopNewsQuery } from "../services/api";
+import { convertTimeStampToDate } from "../types/utils";
 
 export interface HomeProps extends NavIdProps {
   fetchedUser?: UserInfo;
@@ -31,12 +34,13 @@ export const Home: FC<HomeProps> = ({ id }) => {
     <Panel id={id}>
       <PanelHeader>Главная</PanelHeader>
       <Group header={<Header>Последние новости</Header>}>
+        {isLoading && <Spinner />}
         {newsArr &&
           newsArr.map((item) => {
             return (
               <RichCell
                 key={item.id}
-                caption={`Дата: ${item.time}`}
+                caption={`Дата: ${convertTimeStampToDate(item.time)}`}
                 text={item.by}
                 afterCaption={`Рейтинг: ${item.score}`}
               >
@@ -46,6 +50,11 @@ export const Home: FC<HomeProps> = ({ id }) => {
               </RichCell>
             );
           })}
+        {error && (
+          <Title level="1" style={{ marginBottom: 16 }}>
+            Произошла ошибка
+          </Title>
+        )}
       </Group>
     </Panel>
   );

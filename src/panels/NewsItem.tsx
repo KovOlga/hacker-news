@@ -17,6 +17,8 @@ import { useParams, useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { newsApi, useGetNewsItemByIdQuery } from "../services/api";
 import { Icon24ExternalLinkOutline } from "@vkontakte/icons";
 import CommentAccordion from "../components/comment-accordion";
+import SimpleComment from "../components/simple-comment";
+import { convertTimeStampToDate } from "../types/utils";
 
 export const NewsItem: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
@@ -50,7 +52,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
         <>
           <RichCell
             text={`Автор: ${newsItem.by}`}
-            caption={`Дата: ${newsItem.time}`}
+            caption={`Дата: ${convertTimeStampToDate(newsItem.time)}`}
             after={
               <Link href={newsItem.url} target="_blank">
                 Перейти к новости{" "}
@@ -87,7 +89,15 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
       {!result.isFetching &&
         result.data &&
         result.data.map((comment) => {
-          return <CommentAccordion key={comment.id} comment={comment} />;
+          if (!comment.kids) {
+            return (
+              <Group key={comment.id}>
+                <SimpleComment comment={comment} />
+              </Group>
+            );
+          } else {
+            return <CommentAccordion key={comment.id} comment={comment} />;
+          }
         })}
       {result.isError && (
         <Title level="1" style={{ marginBottom: 16 }}>

@@ -3,14 +3,14 @@ import { FC, useEffect } from "react";
 import { IComment } from "../../types/data";
 import { newsApi } from "../../services/api";
 import SimpleComment from "../simple-comment";
+import { convertTimeStampToDate } from "../../types/utils";
 
 interface ICommentProps {
   comment: IComment;
 }
 
 const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
-  const [trigger, result, lastPromiseInfo] =
-    newsApi.useLazyGetCommentKidsQuery();
+  const [trigger, result] = newsApi.useLazyGetCommentKidsQuery();
 
   useEffect(() => {
     if (result && result.data) {
@@ -29,7 +29,10 @@ const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
     <Group key={comment.id}>
       <Accordion onChange={(e) => e && handleAccordionClick(comment.id)}>
         <Accordion.Summary iconPosition="before">
-          <RichCell caption={`Дата: ${comment.time}`} text={comment.text}>
+          <RichCell
+            caption={`Дата: ${convertTimeStampToDate(comment.time)}`}
+            text={comment.text}
+          >
             {comment.by}
           </RichCell>
         </Accordion.Summary>
