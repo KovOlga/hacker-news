@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Accordion,
   Div,
@@ -22,10 +22,6 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
 
   // const { data, error, isLoading } = useGetNewsByIdQuery(Number(params?.id));
   const { data, error, isLoading } = useGetNewsItemByIdQuery(8863);
-
-  useEffect(() => {
-    console.log("data", data);
-  }, [data]);
 
   return (
     <Panel id={id}>

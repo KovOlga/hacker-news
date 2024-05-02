@@ -35,6 +35,22 @@ export const newsApi = createApi({
     getCommentKids: builder.query<IComment[], number>({
       query: (id) => `item/${id}.json`,
       transformResponse: async (response: IComment) => {
+        const getDeepComments = async (obj: IComment) => {
+          if (obj.kids) {
+            const requests = obj.kids.map((id) =>
+              fetch(
+                `https://hacker-news.firebaseio.com/v0/item/${id}.json`
+              ).then((res) => res.json())
+            );
+            obj.loadedKids = await Promise.all(requests);
+            obj.loadedKids.forEach((comment) => getDeepComments(comment));
+          }
+          return obj;
+        };
+        const tftf = await getDeepComments(response);
+        console.log("tftf", tftf);
+
+        ///
         const requests = response.kids.map((id) =>
           fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
             (res) => res.json()

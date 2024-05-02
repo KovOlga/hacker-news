@@ -18,7 +18,8 @@ export interface INewsItemWithComments {
 export interface IComment {
   by: string;
   id: number;
-  kids: number[];
+  kids?: number[];
+  loadedKids?: IComment[];
   parent: number;
   text: string;
   time: any;

@@ -8,20 +8,18 @@ interface ICommentProps {
 }
 
 const Comment: FC<ICommentProps> = ({ comment }) => {
-  const infoStyle = { color: "var(--vkui--color_text_subhead)" };
   const [trigger, result, lastPromiseInfo] =
     newsApi.useLazyGetCommentKidsQuery();
-  // const [comm, setComm] = useState({})
 
   useEffect(() => {
     if (result && result.data) {
-      console.log("result", result);
+      // console.log("result", result);
     }
   }, [result]);
 
   const handleAccordionClick = async (commentId: number) => {
-    console.log("id", commentId);
-    if (comment.kids) {
+    // console.log("id", commentId);
+    if (commentId) {
       trigger(commentId);
     }
   };
@@ -40,8 +38,9 @@ const Comment: FC<ICommentProps> = ({ comment }) => {
           result.data &&
           result.data.map((comment) => {
             return (
-              <Accordion.Content>
-                <Comment key={comment.id} comment={comment} />
+              <Accordion.Content key={comment.id}>
+                {/* <Comment comment={comment} /> */}
+                <Div>{comment.text}</Div>
               </Accordion.Content>
             );
           })}
