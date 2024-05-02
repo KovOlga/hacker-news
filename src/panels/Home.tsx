@@ -30,7 +30,7 @@ export const Home: FC<HomeProps> = ({ id }) => {
 
   useEffect(() => {
     trigger();
-    timerID.current = setInterval(() => trigger(), 5000);
+    timerID.current = setInterval(() => trigger(), 60000);
 
     return () => clearInterval(timerID.current);
   }, []);
@@ -66,7 +66,7 @@ export const Home: FC<HomeProps> = ({ id }) => {
         {!newsArr.isFetching &&
           newsArr.data &&
           newsArr.data.map((item) => {
-            console.log("item.time", item.time);
+            // console.log("item.time", item.time);
             return (
               <RichCell
                 key={item.id}

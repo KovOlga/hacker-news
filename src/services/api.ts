@@ -10,7 +10,7 @@ export const newsApi = createApi({
     getTopNews: builder.query<INewsItem[], void>({
       query: () => "newstories.json",
       transformResponse: async (response: INewsItem[]) => {
-        const idArr = response.slice(0, 5);
+        const idArr = response.slice(0, 100);
         const requests = idArr.map((id) =>
           fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
             (res) => res.json()
@@ -26,13 +26,17 @@ export const newsApi = createApi({
     getNewsItemRootComments: builder.query<IComment[], number>({
       query: (id) => `item/${id}.json`,
       transformResponse: async (response: INewsItem) => {
-        const parentCommentsRequests = response.kids.map((id) =>
-          fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
-            (res) => res.json()
-          )
-        );
-        const res = await Promise.all(parentCommentsRequests);
-        return res;
+        if (response.kids) {
+          const parentCommentsRequests = response.kids.map((id) =>
+            fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
+              (res) => res.json()
+            )
+          );
+          const res = await Promise.all(parentCommentsRequests);
+          return res;
+        } else {
+          return [];
+        }
       },
     }),
     getCommentKids: builder.query<IComment, number>({
@@ -54,7 +58,6 @@ export const newsApi = createApi({
           return modifiedObj;
         };
         const res = await getDeepComments(response);
-        // console.log("tftf", res);
         return res;
       },
     }),

@@ -1,7 +1,6 @@
 import { FC, useEffect } from "react";
 import {
   Button,
-  Div,
   Group,
   Link,
   NavIdProps,
@@ -28,16 +27,15 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
     data: newsItem,
     error: newItemError,
     isLoading: newItemLoading,
-  } = useGetNewsItemByIdQuery(8863);
+  } = useGetNewsItemByIdQuery(Number(params?.id));
   const [trigger, rootComments] = newsApi.useLazyGetNewsItemRootCommentsQuery();
-  // 8863
-  // Number(params?.id)
+
   useEffect(() => {
-    trigger(8863);
+    trigger(Number(params?.id));
   }, []);
 
   const handleUpdateCommentsClick = () => {
-    trigger(8863);
+    trigger(Number(params?.id));
   };
 
   return (
