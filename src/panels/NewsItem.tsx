@@ -29,7 +29,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
     error: newItemError,
     isLoading: newItemLoading,
   } = useGetNewsItemByIdQuery(8863);
-  const [trigger, result] = newsApi.useLazyGetNewsItemRootCommentsQuery();
+  const [trigger, rootComments] = newsApi.useLazyGetNewsItemRootCommentsQuery();
   // 8863
   // Number(params?.id)
   useEffect(() => {
@@ -69,7 +69,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
               <Button
                 appearance="accent"
                 mode="outline"
-                loading={result.isFetching}
+                loading={rootComments.isFetching}
                 onClick={handleUpdateCommentsClick}
               >
                 Обновить комментарии
@@ -85,10 +85,10 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
           Произошла ошибка
         </Title>
       )}
-      {result.isFetching && <Spinner />}
-      {!result.isFetching &&
-        result.data &&
-        result.data.map((comment) => {
+      {rootComments.isFetching && <Spinner />}
+      {!rootComments.isFetching &&
+        rootComments.data &&
+        rootComments.data.map((comment) => {
           if (!comment.kids) {
             return (
               <Group key={comment.id}>
@@ -99,7 +99,7 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
             return <CommentAccordion key={comment.id} comment={comment} />;
           }
         })}
-      {result.isError && (
+      {rootComments.isError && (
         <Title level="1" style={{ marginBottom: 16 }}>
           Произошла ошибка
         </Title>

@@ -1,24 +1,20 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import {
   Panel,
   PanelHeader,
   Header,
   Button,
   Group,
-  Cell,
-  Div,
-  Avatar,
   NavIdProps,
   RichCell,
-  UsersStack,
-  ButtonGroup,
   Link,
   Spinner,
   Title,
+  SimpleCell,
 } from "@vkontakte/vkui";
 import { UserInfo } from "@vkontakte/vk-bridge";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
-import { useGetTopNewsQuery } from "../services/api";
+import { newsApi } from "../services/api";
 import { convertTimeStampToDate } from "../types/utils";
 
 export interface HomeProps extends NavIdProps {
@@ -28,19 +24,55 @@ export interface HomeProps extends NavIdProps {
 export const Home: FC<HomeProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
 
-  const { data: newsArr, error, isLoading } = useGetTopNewsQuery();
+  const [trigger, newsArr] = newsApi.useLazyGetTopNewsQuery();
+
+  const timerID = useRef<ReturnType<typeof setInterval>>();
+
+  useEffect(() => {
+    trigger();
+    timerID.current = setInterval(() => trigger(), 5000);
+
+    return () => clearInterval(timerID.current);
+  }, []);
+
+  const handleUpdateTopNewsClick = () => {
+    clearInterval(timerID.current);
+    trigger();
+    timerID.current = setInterval(() => trigger(), 60000);
+  };
 
   return (
     <Panel id={id}>
       <PanelHeader>Главная</PanelHeader>
-      <Group header={<Header>Последние новости</Header>}>
-        {isLoading && <Spinner />}
-        {newsArr &&
-          newsArr.map((item) => {
+      <Group
+        header={
+          <SimpleCell
+            after={
+              <Button
+                appearance="accent"
+                mode="outline"
+                loading={newsArr.isFetching}
+                onClick={handleUpdateTopNewsClick}
+              >
+                Обновить новости
+              </Button>
+            }
+          >
+            <Header>Последние новости</Header>
+          </SimpleCell>
+        }
+      >
+        {newsArr.isFetching && <Spinner />}
+        {!newsArr.isFetching &&
+          newsArr.data &&
+          newsArr.data.map((item) => {
+            console.log("item.time", item.time);
             return (
               <RichCell
                 key={item.id}
-                caption={`Дата: ${convertTimeStampToDate(item.time)}`}
+                caption={`Дата: ${
+                  item.time && convertTimeStampToDate(item.time)
+                }`}
                 text={item.by}
                 afterCaption={`Рейтинг: ${item.score}`}
               >
@@ -50,7 +82,7 @@ export const Home: FC<HomeProps> = ({ id }) => {
               </RichCell>
             );
           })}
-        {error && (
+        {newsArr.isError && (
           <Title level="1" style={{ marginBottom: 16 }}>
             Произошла ошибка
           </Title>
