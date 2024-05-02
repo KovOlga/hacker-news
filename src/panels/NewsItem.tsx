@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import {
-  Accordion,
+  Button,
   Div,
   Group,
   Link,
@@ -9,19 +9,34 @@ import {
   PanelHeader,
   PanelHeaderBack,
   RichCell,
+  SimpleCell,
+  Spinner,
   Title,
 } from "@vkontakte/vkui";
 import { useParams, useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { newsApi, useGetNewsItemByIdQuery } from "../services/api";
 import { Icon24ExternalLinkOutline } from "@vkontakte/icons";
-import CommentAccordion from "../components/comment";
+import CommentAccordion from "../components/comment-accordion";
 
 export const NewsItem: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
-  // const params = useParams<"id">();
+  const params = useParams<"id">();
 
-  // const { data, error, isLoading } = useGetNewsByIdQuery(Number(params?.id));
-  const { data, error, isLoading } = useGetNewsItemByIdQuery(8863);
+  const {
+    data: newsItem,
+    error: newItemError,
+    isLoading: newItemLoading,
+  } = useGetNewsItemByIdQuery(8863);
+  const [trigger, result] = newsApi.useLazyGetNewsItemRootCommentsQuery();
+  // 8863
+  // Number(params?.id)
+  useEffect(() => {
+    trigger(8863);
+  }, []);
+
+  const handleUpdateCommentsClick = () => {
+    trigger(8863);
+  };
 
   return (
     <Panel id={id}>
@@ -30,27 +45,54 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
       >
         Вернуться назад
       </PanelHeader>
-      {data && (
+      {newItemLoading && <Spinner />}
+      {newsItem && (
         <>
           <RichCell
-            text={`Автор: ${data.newsItem.by}`}
-            caption={`Дата: ${data.newsItem.time}`}
+            text={`Автор: ${newsItem.by}`}
+            caption={`Дата: ${newsItem.time}`}
             after={
-              <Link href={data.newsItem.url} target="_blank">
+              <Link href={newsItem.url} target="_blank">
                 Перейти к новости{" "}
                 <Icon24ExternalLinkOutline width={16} height={16} />
               </Link>
             }
           >
             <Title level="2" style={{ marginBottom: 16 }}>
-              {data.newsItem.title}
+              {newsItem.title}
             </Title>
           </RichCell>
-          <Div>{`Кол-во комментариев: ${data.newsItem.descendants}`}</Div>
-          {data.comments.map((comment) => {
-            return <CommentAccordion key={comment.id} comment={comment} />;
-          })}
+          <SimpleCell
+            after={
+              <Button
+                appearance="accent"
+                mode="outline"
+                loading={result.isFetching}
+                onClick={handleUpdateCommentsClick}
+              >
+                Обновить комментарии
+              </Button>
+            }
+          >
+            {`Всего комментариев: ${newsItem.descendants}`}
+          </SimpleCell>
         </>
+      )}
+      {newItemError && (
+        <Title level="1" style={{ marginBottom: 16 }}>
+          Произошла ошибка
+        </Title>
+      )}
+      {result.isFetching && <Spinner />}
+      {!result.isFetching &&
+        result.data &&
+        result.data.map((comment) => {
+          return <CommentAccordion key={comment.id} comment={comment} />;
+        })}
+      {result.isError && (
+        <Title level="1" style={{ marginBottom: 16 }}>
+          Произошла ошибка
+        </Title>
       )}
     </Panel>
   );

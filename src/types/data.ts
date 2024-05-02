@@ -10,11 +10,6 @@ export interface INewsItem {
   url: string;
 }
 
-export interface INewsItemWithComments {
-  newsItem: INewsItem;
-  comments: IComment[];
-}
-
 export interface IComment {
   by: string;
   id: number;

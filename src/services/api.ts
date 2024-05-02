@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IComment, INewsItem, INewsItemWithComments } from "../types/data";
+import { IComment, INewsItem } from "../types/data";
 
 export const newsApi = createApi({
-  reducerPath: "pokemonApi",
+  reducerPath: "newsApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://hacker-news.firebaseio.com/v0/",
   }),
@@ -20,7 +20,10 @@ export const newsApi = createApi({
         return res;
       },
     }),
-    getNewsItemById: builder.query<INewsItemWithComments, number>({
+    getNewsItemById: builder.query<INewsItem, number>({
+      query: (id) => `item/${id}.json`,
+    }),
+    getNewsItemRootComments: builder.query<IComment[], number>({
       query: (id) => `item/${id}.json`,
       transformResponse: async (response: INewsItem) => {
         const parentCommentsRequests = response.kids.map((id) =>
@@ -29,7 +32,7 @@ export const newsApi = createApi({
           )
         );
         const res = await Promise.all(parentCommentsRequests);
-        return { newsItem: response, comments: res };
+        return res;
       },
     }),
     getCommentKids: builder.query<IComment, number>({
@@ -51,7 +54,7 @@ export const newsApi = createApi({
           return modifiedObj;
         };
         const res = await getDeepComments(response);
-        console.log("tftf", res);
+        // console.log("tftf", res);
         return res;
       },
     }),
@@ -62,4 +65,5 @@ export const {
   useGetTopNewsQuery,
   useGetNewsItemByIdQuery,
   useGetCommentKidsQuery,
+  useGetNewsItemRootCommentsQuery,
 } = newsApi;

@@ -1,7 +1,8 @@
-import { Accordion, Div, Group, RichCell } from "@vkontakte/vkui";
-import { FC, useEffect, useState } from "react";
+import { Accordion, Group, RichCell } from "@vkontakte/vkui";
+import { FC, useEffect } from "react";
 import { IComment } from "../../types/data";
 import { newsApi } from "../../services/api";
+import SimpleComment from "../simple-comment";
 
 interface ICommentProps {
   comment: IComment;
@@ -46,24 +47,6 @@ const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
           })}
       </Accordion>
     </Group>
-  );
-};
-
-const SimpleComment: FC<{ comment: IComment }> = ({ comment }) => {
-  console.log("comment", comment);
-  return (
-    <>
-      <RichCell caption={`Дата: ${comment.time}`} text={comment.text}>
-        {comment.by}
-      </RichCell>
-      {comment.loadedKids && (
-        <Div>
-          {comment.loadedKids.map((comment) => {
-            return <SimpleComment comment={comment} key={comment.id} />;
-          })}
-        </Div>
-      )}
-    </>
   );
 };
 
