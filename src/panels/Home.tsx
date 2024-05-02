@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import {
   Panel,
   PanelHeader,
@@ -15,7 +15,7 @@ import {
 import { UserInfo } from "@vkontakte/vk-bridge";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { newsApi } from "../services/api";
-import { convertTimeStampToDate } from "../types/utils";
+import { convertTimeStampToDate } from "../utils/utils";
 
 export interface HomeProps extends NavIdProps {
   fetchedUser?: UserInfo;
@@ -66,7 +66,6 @@ export const Home: FC<HomeProps> = ({ id }) => {
         {!newsArr.isFetching &&
           newsArr.data &&
           newsArr.data.map((item) => {
-            // console.log("item.time", item.time);
             return (
               <RichCell
                 key={item.id}

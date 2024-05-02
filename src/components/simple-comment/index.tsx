@@ -1,10 +1,9 @@
 import { Div, RichCell } from "@vkontakte/vkui";
 import { IComment } from "../../types/data";
 import { FC } from "react";
-import { convertTimeStampToDate } from "../../types/utils";
+import { convertTimeStampToDate } from "../../utils/utils";
 
 const SimpleComment: FC<{ comment: IComment }> = ({ comment }) => {
-  console.log("comment", comment);
   return (
     <>
       <RichCell

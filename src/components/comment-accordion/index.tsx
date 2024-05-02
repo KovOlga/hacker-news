@@ -1,9 +1,9 @@
 import { Accordion, Group, RichCell } from "@vkontakte/vkui";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { IComment } from "../../types/data";
 import { newsApi } from "../../services/api";
 import SimpleComment from "../simple-comment";
-import { convertTimeStampToDate } from "../../types/utils";
+import { convertTimeStampToDate } from "../../utils/utils";
 
 interface ICommentProps {
   comment: IComment;
@@ -12,14 +12,7 @@ interface ICommentProps {
 const CommentAccordion: FC<ICommentProps> = ({ comment }) => {
   const [trigger, result] = newsApi.useLazyGetCommentKidsQuery();
 
-  useEffect(() => {
-    if (result && result.data) {
-      // console.log("result", result);
-    }
-  }, [result]);
-
   const handleAccordionClick = async (commentId: number) => {
-    // console.log("id", commentId);
     if (commentId) {
       trigger(commentId);
     }

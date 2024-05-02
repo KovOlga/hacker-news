@@ -17,17 +17,15 @@ import { newsApi, useGetNewsItemByIdQuery } from "../services/api";
 import { Icon24ExternalLinkOutline } from "@vkontakte/icons";
 import CommentAccordion from "../components/comment-accordion";
 import SimpleComment from "../components/simple-comment";
-import { convertTimeStampToDate } from "../types/utils";
+import { convertTimeStampToDate } from "../utils/utils";
 
 export const NewsItem: FC<NavIdProps> = ({ id }) => {
   const routeNavigator = useRouteNavigator();
   const params = useParams<"id">();
 
-  const {
-    data: newsItem,
-    error: newItemError,
-    isLoading: newItemLoading,
-  } = useGetNewsItemByIdQuery(Number(params?.id));
+  const { data: newsItem, error: newItemError } = useGetNewsItemByIdQuery(
+    Number(params?.id)
+  );
   const [trigger, rootComments] = newsApi.useLazyGetNewsItemRootCommentsQuery();
 
   useEffect(() => {
@@ -45,7 +43,6 @@ export const NewsItem: FC<NavIdProps> = ({ id }) => {
       >
         Вернуться назад
       </PanelHeader>
-      {newItemLoading && <Spinner />}
       {newsItem && (
         <>
           <RichCell
